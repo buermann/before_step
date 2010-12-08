@@ -4,8 +4,9 @@ rectifies that in Cucumber 0.8.3.  Untested in any other version.
 In a large, older application I've started using Selenium RC to run browser tests.
 One of the fine features of the application is that some prototype responders
 never hook into onComplete to declinate activeRequestCount, causing the waitForAjax
-command in Selenium RC to time out.  I wanted to bulldoze through that fine points
-and do something like this:
+command in Selenium RC to time out.  I wanted to bulldoze through the fine points
+of prototype (if anybody knows how to get a list of active responders so its possible
+to track down what to debug, please do tell) and do something like this:
 
   def responders 
     @browser.get_eval("selenium.browserbot.getUserWindow().Ajax.activeRequestCount").to_i
@@ -25,6 +26,6 @@ and do something like this:
 
 So if there was an old prototype responder that didn't give up the ghost properly we
 promptly ignore it, wait on any new ones, and, assuming we're not buried underneath
-unresolved prototype objects carry on our tests at a fine clip.
+unresolved prototype objects every step of the way, carry on our tests at a fine clip.
 
 
