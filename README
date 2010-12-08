@@ -1,0 +1,30 @@
+For some reason there's an AfterStep hook in Cucumber, but no BeforeStep.  This
+rectifies that in Cucumber 0.8.3.  Untested in any other version.
+
+In a large, older application I've started using Selenium RC to run browser tests.
+One of the fine features of the application is that some prototype responders
+never hook into onComplete to declinate activeRequestCount, causing the waitForAjax
+command in Selenium RC to time out.  I wanted to bulldoze through that fine points
+and do something like this:
+
+  def responders 
+    @browser.get_eval("selenium.browserbot.getUserWindow().Ajax.activeRequestCount").to_i
+  end
+  BeforeStep do |scenario|
+    @before_responders = responders
+  end
+  AfterStep do |scenario|
+    # wait for ajax after every step if there's been a new ajax responder added to the pool.
+    ajax_waits = 0 
+    while (responders > @before_responders) do  
+      break if ajax_waits > 50 # give the new request up to 5 seconds to do what it does
+      ajax_waits += 1
+      sleep(0.1)
+    end
+  end 
+
+So if there was an old prototype responder that didn't give up the ghost properly we
+promptly ignore it, wait on any new ones, and, assuming we're not buried underneath
+unresolved prototype objects carry on our tests at a fine clip.
+
+
