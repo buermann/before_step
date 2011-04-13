@@ -1,7 +1,8 @@
 require 'cucumber'
 #Cucumber::Ast::StepInvocation.class_eval do
-# class_eval loses the Pending exception class that would otherwise be there.
-# I do not fully grok why. 
+# class_eval loses the Pending exception class scope that would otherwise be there,
+# and would require the fully qualified class name, which I forget at the moment,
+# hence the duck typing with false laziness:
 module Cucumber
   module Ast
     class StepInvocation #:nodoc:
@@ -42,7 +43,6 @@ Cucumber::LanguageSupport::LanguageMethods.class_eval do
   end
 end
 
-# ugh, duck-typing a mix-in?  class_eval doesn't have much luck with this either.
 module Cucumber
   module RbSupport
     module RbDsl
